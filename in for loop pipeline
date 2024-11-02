@@ -1,0 +1,17 @@
+scriptType: bash
+scriptLocation: inlineScript
+inlineScript: |
+  echo "$(date +"%Y-%m-%d %H:%M:%S") - INFO  - Script started"
+  
+  # "Generating Prod VMs array"
+  IFS="," read -a vms_array <<< ${{ variables.prod_vmnames }}
+  echo "VMs array is: $vms_array"
+
+  # Run script on all VMs
+  chmod +x AzVmRun.sh
+  for vm in ${vms_array[@]}
+  do
+    echo "Launching script /Scripts/AzVmRun.sh on vm: $vm"
+    ./AzVmRun.sh \
+      -v $vm -k ${{ variables.kvname }}
+  done
